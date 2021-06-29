@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table_task</title>
+
+    <style>
+        table,th,td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 50%; float:left;" id="div1">
+    <form onsubmit="add_entry(); return false">
+    <label for="name">NAME:</label>
+    <input type="text" id= "name1" name="name"><br><br>
+    <label for="age">Age:</label>
+    <input type="number" id= "age1" name="age"><br><br>
+    <label for="email">Email:</label>
+    <input type="text" id= "email1" name="email"><br><br>
+    <input type="submit" value="Submit Data" id="submit">
+    </form>
+    </div>
+    <div style="width: 50%; float: right;">
+    <table id="tabl">
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Email</th>
+        </tr>
+    </table>
+    </div>
+    <script>
+        var datatable=[];
+        //function to add entries as object in array
+        function add_entry(){
+            var data = {
+                name : document.getElementById("name1").value,
+                age : document.getElementById("age1").value,
+                email : document.getElementById("email1").value,
+            }
+
+            datatable.push(data);
+            document.getElementById("name1").value='';
+            document.getElementById("age1").value='';
+            document.getElementById("email1").value='';
+            display_table(data,(datatable.length - 1));
+        }
+
+        //2.Function to take edited values and replace in datatable
+        function edit_table(edit_currindex){
+            var proceed=confirm('you are trying to edit data. Press OK to continue');
+            if(proceed){
+                datatable[edit_currindex].name=document.getElementById("name1").value;
+                datatable[edit_currindex].age=document.getElementById("age1").value;
+                datatable[edit_currindex].email=document.getElementById("email1").value;
+                console.log(datatable);
+                document.getElementById("edit").remove();
+                document.getElementById("submit").removeAttribute("style");
+                document.getElementById("name1").value='';
+                document.getElementById("age1").value='';
+                document.getElementById("email1").value='';
+                edit_disp_table();
+            }
+            else{
+            document.getElementById("edit").remove();
+            document.getElementById("submit").removeAttribute("style");
+            document.getElementById("name1").value='';
+            document.getElementById("age1").value='';
+            document.getElementById("email1").value='';
+            }
+        }
+        //3.function to delete previous table rows
+        function edit_disp_table(){
+            for(var i=0; i<datatable.length; i++){
+                var x=i.toString();
+                document.getElementById(x).remove();
+                display_table(datatable[i],i);
+            }
+        }
+
+        //4.function to create table rows
+        function display_table(data,indx){
+            var table=document.getElementById("tabl");
+            var col =["name","age","email"];
+            var table_row=document.createElement("tr");
+            table_row.id=indx;
+            for(var i=0; i<3;i++){
+                var table_data=document.createElement("td");
+                table_data.innerHTML=data[col[i]];
+                table_row.appendChild(table_data);
+                
+
+            }
+            var edit=document.createElement("input");
+            edit.setAttribute("type","button");
+            edit.setAttribute("value","Edit");
+            edit.onclick=function(){ edit_data(indx)};
+            var dlete=document.createElement("input");
+            dlete.setAttribute("type","button");
+            dlete.setAttribute("value","Delete");
+            dlete.onclick=function(){ delete_table(indx)};
+            table_row.appendChild(edit);
+            table_row.appendChild(dlete);
+            table.appendChild(table_row);
+
+        }
+        
+        //1.function for edit button
+        function edit_data(id_num){
+            console.log(id_num);
+            document.getElementById("submit").style.display="none";
+            var position = document.getElementById("div1");
+            var new_button=document.createElement("input");
+            new_button.setAttribute("id","edit");
+            new_button.setAttribute("type","button");
+            new_button.setAttribute("value","Edit Table");
+            new_button.onclick=function(){ edit_table(id_num)};
+            position.appendChild(new_button);
+            document.getElementById("name1").value=datatable[id_num].name;
+            document.getElementById("age1").value=datatable[id_num].age;
+            document.getElementById("email1").value=datatable[id_num].email;
+        }
+
+        //function to delete table
+        function delete_table(id_num){
+            var proceed=confirm("you are trying to delete data. Press OK to continue");
+            if(proceed){
+            datatable.splice(id_num,1);
+            console.log(datatable);
+            for(var i=0; i<=datatable.length; i++){
+                var x=i.toString();
+                document.getElementById(x).remove();
+                if(i<datatable.length){
+                display_table(datatable[i],i);
+                }
+            }
+        }
+        }
+        
+    </script>
+</body>
+</html>
